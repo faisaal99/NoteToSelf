@@ -46,7 +46,6 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-
         mEditor.commit();
     }
 }

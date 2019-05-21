@@ -10,6 +10,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,11 +21,14 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private List<Note> mShoppingItemList = new ArrayList<>();
+    //private List<Note> mNoteList = new ArrayList<>();
+    private List<Note> mNoteList;
     private RecyclerView mRecyclerView;
     private NoteAdapter mAdapter;
     private boolean mShowDividers;
     private SharedPreferences mPrefs;
+
+    private JSONSerializer mSerializer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -44,8 +48,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mSerializer = new JSONSerializer("NoteToSelf.json", getApplicationContext());
+
+        try {
+            mNoteList = mSerializer.load();
+        } catch (Exception e) {
+            mNoteList = new ArrayList<Note>();
+            Log.e("Error loading notes: ", "", e);
+        }
+
         mRecyclerView = findViewById(R.id.recyclerView);
-        mAdapter = new NoteAdapter(this, mShoppingItemList);
+        mAdapter = new NoteAdapter(this, mNoteList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
 
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -74,15 +87,36 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        saveNotes();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        saveNotes();
+    }
+
+    public void saveNotes() {
+        try {
+            mSerializer.save(mNoteList);
+        }
+        catch (Exception e) {
+            Log.e("Error saving notes: ", "", e);
+        }
+    }
+
     public void createNewNote(Note n) {
-        mShoppingItemList.add(n);
+        mNoteList.add(n);
         mAdapter.notifyDataSetChanged();
     }
 
     public void showNote(int noteToShow) {
         DialogShowNote dialog = new DialogShowNote();
 
-        dialog.sendNotesSelected(mShoppingItemList.get(noteToShow));
+        dialog.sendNotesSelected(mNoteList.get(noteToShow));
         dialog.show(getSupportFragmentManager(), "");
     }
 
