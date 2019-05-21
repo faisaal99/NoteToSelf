@@ -1,5 +1,7 @@
 package com.faisal.notetoself;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -11,15 +13,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private List<Note> mNoteList = new ArrayList<>();
+    private List<Note> mShoppingItemList = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private NoteAdapter mAdapter;
+    private boolean mShowDividers;
+    private SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -38,29 +45,44 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mRecyclerView = findViewById(R.id.recyclerView);
-        mAdapter = new NoteAdapter(this, mNoteList);
+        mAdapter = new NoteAdapter(this, mShoppingItemList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        // Add a neat dividing line between items in the list
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 
         // Set adapter
         mRecyclerView.setAdapter(mAdapter);
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mPrefs = getSharedPreferences("Note to Self", MODE_PRIVATE);
+        mShowDividers = mPrefs.getBoolean("dividers", true);
+
+        if (mShowDividers) {
+            // Add a neat dividing line between items in the list
+            mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        } else {
+            // Check first if there are dividers or the app will crash
+            if(mRecyclerView.getItemDecorationCount() > 0) {
+                mRecyclerView.removeItemDecorationAt(0);
+            }
+        }
+    }
+
     public void createNewNote(Note n) {
-        mNoteList.add(n);
+        mShoppingItemList.add(n);
         mAdapter.notifyDataSetChanged();
     }
 
     public void showNote(int noteToShow) {
         DialogShowNote dialog = new DialogShowNote();
 
-        dialog.sendNotesSelected(mNoteList.get(noteToShow));
+        dialog.sendNotesSelected(mShoppingItemList.get(noteToShow));
         dialog.show(getSupportFragmentManager(), "");
     }
 
@@ -80,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
             return true;
         }
 

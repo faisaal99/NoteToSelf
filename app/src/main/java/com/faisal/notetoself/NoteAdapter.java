@@ -13,12 +13,12 @@ import java.util.List;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ListItemHolder> {
 
-    private List<Note> mNoteList;
+    private List<Note> mShoppingItemList;
     private MainActivity mMainActivity;
 
-    public NoteAdapter(MainActivity mainActivity, List<Note> noteList) {
+    public NoteAdapter(MainActivity mainActivity, List<Note> shoppingItemList) {
         mMainActivity = mainActivity;
-        mNoteList = noteList;
+        mShoppingItemList = shoppingItemList;
     }
 
     @NonNull
@@ -31,33 +31,33 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ListItemHolder
 
     @Override
     public void onBindViewHolder(@NonNull NoteAdapter.ListItemHolder holder, int position) {
-        Note note = mNoteList.get(position);
-        holder.mTitle.setText(note.getTitle());
+        Note shoppingItem = mShoppingItemList.get(position);
+        holder.mTitle.setText(shoppingItem.getTitle());
 
-        // Show the first 15 characters of the actual note
-        // Unless a short note then show half
-        if (note.getDescription().length() > 15) {
-            holder.mDescription.setText(note.getDescription().substring(0, 15));
+        // Show the first 15 characters of the actual shoppingItem
+        // Unless a short shoppingItem then show half
+        if (shoppingItem.getDescription().length() > 15) {
+            holder.mDescription.setText(shoppingItem.getDescription().substring(0, 15));
         }
         else {
-            holder.mDescription.setText(note.getDescription().substring(0, note.getDescription().length() / 2));
+            holder.mDescription.setText(shoppingItem.getDescription().substring(0, shoppingItem.getDescription().length() / 2));
         }
 
-        // What is the status of the note?
-        if (note.isIdea()) {
+        // What is the status of the shoppingItem?
+        if (shoppingItem.isIdea()) {
             holder.mStatus.setText(R.string.idea_text);
         }
-        else if (note.isImportant()) {
+        else if (shoppingItem.isImportant()) {
             holder.mStatus.setText(R.string.important_text);
         }
-        else if (note.isTodo()) {
+        else if (shoppingItem.isTodo()) {
             holder.mStatus.setText(R.string.todo_text);
         }
     }
 
     @Override
     public int getItemCount() {
-        return mNoteList.size();
+        return mShoppingItemList.size();
     }
 
     public class ListItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

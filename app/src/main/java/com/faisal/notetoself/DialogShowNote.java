@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 public class DialogShowNote extends DialogFragment {
 
-    private Note mNote;
+    private Note mShoppingItem;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -23,26 +23,26 @@ public class DialogShowNote extends DialogFragment {
         TextView txtTitle = (TextView) dialogView.findViewById(R.id.txtTitle);
         TextView txtDescription = (TextView) dialogView.findViewById(R.id.txtDescription);
 
-        txtTitle.setText(mNote.getTitle());
-        txtDescription.setText(mNote.getDescription());
+        txtTitle.setText(mShoppingItem.getTitle());
+        txtDescription.setText(mShoppingItem.getDescription());
 
         TextView txtImportant = (TextView) dialogView.findViewById(R.id.textViewImportant);
         TextView txtTodo = (TextView) dialogView.findViewById(R.id.textViewTodo);
         TextView txtIdea = (TextView) dialogView.findViewById(R.id.textViewIdea);
 
-        if (!mNote.isImportant()) {
+        if (!mShoppingItem.isImportant()) {
             txtImportant.setVisibility(View.GONE);
         }
-        if (!mNote.isTodo()) {
+        if (!mShoppingItem.isTodo()) {
             txtTodo.setVisibility(View.GONE);
         }
-        if (!mNote.isIdea()) {
+        if (!mShoppingItem.isIdea()) {
             txtIdea.setVisibility(View.GONE);
         }
 
         Button btnOK = (Button) dialogView.findViewById(R.id.btnOK);
 
-        builder.setView(dialogView).setMessage("Your Note");
+        builder.setView(dialogView).setMessage(getResources().getString(R.string.your_item));
 
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,7 +54,7 @@ public class DialogShowNote extends DialogFragment {
         return builder.create();
     }
 
-    public void sendNotesSelected(Note noteSelected) {
-        mNote = noteSelected;
+    public void sendNotesSelected(Note shoppingItemSelected) {
+        mShoppingItem = shoppingItemSelected;
     }
 }

@@ -14,10 +14,9 @@ public class DialogNewNote extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstance) {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
         LayoutInflater inflater = getActivity().getLayoutInflater();
-
         View dialogView = inflater.inflate(R.layout.dialog_new_note, null);
 
         final EditText editTitle = (EditText) dialogView.findViewById(R.id.editTitle);
@@ -41,20 +40,20 @@ public class DialogNewNote extends DialogFragment {
             @Override
             public void onClick(View view) {
                 // Create a new note
-                Note newNote = new Note();
+                Note newShoppingItem = new Note();
 
                 // Set its variables to match user's entries on the form
-                newNote.setTitle(editTitle.getText().toString());
-                newNote.setDescription(editDescription.getText().toString());
-                newNote.setIdea(checkBoxIdea.isChecked());
-                newNote.setTodo(checkBoxTodo.isChecked());
-                newNote.setImportant(checkBoxImportant.isChecked());
+                newShoppingItem.setTitle(editTitle.getText().toString());
+                newShoppingItem.setDescription(editDescription.getText().toString());
+                newShoppingItem.setIdea(checkBoxIdea.isChecked());
+                newShoppingItem.setTodo(checkBoxTodo.isChecked());
+                newShoppingItem.setImportant(checkBoxImportant.isChecked());
 
                 // Get a reference to MainActivity
                 MainActivity callingActivity = (MainActivity) getActivity();
 
-                // Pass newNote back to MainActivity
-                callingActivity.createNewNote(newNote);
+                // Pass newShoppingItem back to MainActivity
+                callingActivity.createNewNote(newShoppingItem);
 
                 // Quit the dialog
                 dismiss();
